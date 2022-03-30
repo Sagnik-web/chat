@@ -8,13 +8,20 @@ const io = new Server(http,{
     }
 })
 
+let roomId = ''
 
 io.on('connection',(socket)=>{
-    socket.on("chat",(payload)=>{
-        console.log(payload);
-        socket.broadcast.emit("chat",payload)
+   socket.on('chat',(payload)=>{
+       socket.join(payload.room)
+       console.log(payload.room);
+       roomId = payload.room
+    //    io.to(payload.room).emit("msg", "Join Room")
 
-    })
+   })
+
+   socket.on("sendMsg",(data)=>{
+       socket.to(roomId).emit("sendMsg",data)
+   })
 
     socket.on('disconnet',()=>{
         console.log("Clint is now disconneted");
